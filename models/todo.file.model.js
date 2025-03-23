@@ -1,6 +1,6 @@
 const {readFromJsonFile, writeToJsonFile} = require("../helper/file.helper");
 
-class TodoModel {
+class TodoFileModel {
     filePath = './data/todos.json'
     todos = null
 
@@ -39,4 +39,4 @@ class TodoModel {
     }
 }
 
-module.exports = TodoModel;
+module.exports = TodoFileModel;

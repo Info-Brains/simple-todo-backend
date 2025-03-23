@@ -1,18 +1,16 @@
 const {readFromJsonFile, writeToJsonFile} = require("../helper/file.helper");
-const TodoModel = require('../models/todo.model');
+const TodoDBModel = require('../models/todo.db.model');
 
-let todos = new TodoModel();
-
-const getTodos = (req, res) => {
+const getTodos = async (req, res) => {
     return res.status(200).json({
         message: 'Fetched all todos successfully',
-        data: todos.getAll()
+        data: await TodoDBModel.getAll()
     })
 }
 
-const getTodoById = (req, res) => {
+const getTodoById = async (req, res) => {
     const id = req.params.id;
-    const todo = todos.findOne(id);
+    const todo = await TodoDBModel.findOne(id);
 
     if (!todo) return res.status(404).json({
         message: 'Todo not found',
@@ -24,16 +22,15 @@ const getTodoById = (req, res) => {
     })
 }
 
-const createTodo = (req, res) => {
+const createTodo = async (req, res) => {
     const title = req.body.title;
 
     if (!title) return res.status(400).json({
         message: 'Title not found',
     });
 
-    todos.createOne({
-        title: title,
-        isCompleted: false
+    await TodoDBModel.createOne({
+        title: title
     })
 
     res.status(201).json({
@@ -41,9 +38,9 @@ const createTodo = (req, res) => {
     })
 }
 
-const updateTodo = (req, res) => {
+const updateTodo = async (req, res) => {
     const id = req.params.id;
-    const todo = todos.findOne(id);
+    const todo = await TodoDBModel.findOne(id);
 
     if (!todo) return res.status(404).json({
         message: 'Todo not found',
@@ -55,26 +52,26 @@ const updateTodo = (req, res) => {
         message: 'Title or isCompleted not found',
     });
 
-    todos.updateOne(id, {
+    const updatedTodo = await TodoDBModel.updateOne(id, {
         ...(title ? { title: title } : {}),
         ...(isCompleted ? { isCompleted: isCompleted } : {}),
     })
 
     res.status(200).json({
         message: 'Todo updated successfully',
-        data: todo
+        data: updatedTodo
     })
 }
 
-const deleteTodo = (req, res) => {
+const deleteTodo = async (req, res) => {
     const id = req.params.id;
-    const todo = todos.findOne(id);
+    const todo = await TodoDBModel.findOne(id);
 
     if (!todo) return res.status(404).json({
         message: 'Todo not found',
     })
 
-    todos.deleteOne(id)
+    await TodoDBModel.deleteOne(id)
 
     res.status(200).json({
         message: 'Todo deleted successfully'
