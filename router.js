@@ -1,13 +1,17 @@
-const { readFromJsonFile, writeToJsonFile } = require('./helper/file.helper');
 const TodoController = require('./controllers/todo.controller');
+const UserController = require('./controllers/user.controller');
+const checkAuth = require('./middlewars/auth.mw');
 const { Router } = require('express');
 
 const router = Router();
 
-router.get('/todos', TodoController.getTodos);
-router.get('/todos/:id', TodoController.getTodoById);
-router.post('/todos', TodoController.createTodo);
-router.put('/todos/:id', TodoController.updateTodo);
-router.delete('/todos/:id', TodoController.deleteTodo);
+router.post('/auth/register', UserController.register);
+router.post('/auth/login', UserController.login);
+
+router.get('/todos', checkAuth, TodoController.getTodos);
+router.get('/todos/:id', checkAuth, TodoController.getTodoById);
+router.post('/todos', checkAuth, TodoController.createTodo);
+router.put('/todos/:id', checkAuth, TodoController.updateTodo);
+router.delete('/todos/:id', checkAuth, TodoController.deleteTodo);
 
 module.exports = router;
